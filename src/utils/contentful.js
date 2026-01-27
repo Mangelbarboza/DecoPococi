@@ -4,10 +4,18 @@ export function toArray(value) {
   return [value].filter(Boolean);
 }
 
+export function normalizeUrl(url) {
+  if (!url) return null;
+  const clean = String(url).trim();
+  if (!clean) return null;
+  if (clean.startsWith("http://") || clean.startsWith("https://")) return clean;
+  if (clean.startsWith("//")) return `https:${clean}`;
+  return `https:${clean}`;
+}
+
 export function assetUrl(asset) {
   const url = asset?.fields?.file?.url;
-  if (!url) return null;
-  return url.startsWith("http") ? url : `https:${url}`;
+  return normalizeUrl(url);
 }
 
 export function richTextToPlainText(rich) {
@@ -25,54 +33,23 @@ export function richTextToPlainText(rich) {
   return walk(rich).replace(/\s+/g, " ").trim();
 }
 
-const norm = (s) => String(s ?? "").trim().toLowerCase();
-
-/* ✅ Mapa anti-errores ortográficos/variantes */
-function canonicalCategory(value) {
-  const v = norm(value);
-
-  if (!v) return "";
-
-  // Persianas
-  if (v === "persiana" || v === "persianas") return "Persianas";
-
-  // Cortinas
-  if (v === "cortina" || v === "cortinas") return "Cortinas";
-
-  // Servicios
-  if (v === "servicio" || v === "servicios") return "Servicios";
-
-  // Alfombras
-  if (v === "alfombra" || v === "alfombras") return "Alfombras";
-
-  // Muebles
-  if (v === "mueble" || v === "muebles") return "Muebles";
-
-  // Si no match, capitaliza “bonito”
-  return v.charAt(0).toUpperCase() + v.slice(1);
-}
-
 export function normalizeProductEntry(entry) {
   const f = entry?.fields ?? {};
 
   const nombre = f.nombre ?? "Producto";
-  const descripcion = richTextToPlainText(
-    f.descripcion ?? f.descripcionCorta ?? f.detalle ?? ""
-  );
+  const descripcion = richTextToPlainText(f.descripcion ?? f.descripcionCorta ?? f.detalle ?? "");
 
-  // categorías: soporta string (categoria) o list (categorias)
-  const categoriasRaw = toArray(f.categorias ?? f.categoria);
-  const categorias = categoriasRaw
-    .map(canonicalCategory)
+  const categorias = toArray(f.categorias ?? f.categoria)
+    .map((s) => String(s).trim())
     .filter(Boolean);
 
-  // etiquetas / subcategorías (se mantienen como texto, también normalizadas levemente)
   const etiquetas = toArray(f.etiquetas ?? f.subcategorias ?? f.subcategoria ?? f.tags)
     .map((s) => String(s).trim())
     .filter(Boolean);
 
-  // imágenes múltiples
-  const imagenes = toArray(f.imagen).map(assetUrl).filter(Boolean);
+  const imagenes = toArray(f.imagen)
+    .map(assetUrl)
+    .filter(Boolean);
 
   return {
     id: entry?.sys?.id ?? crypto.randomUUID(),

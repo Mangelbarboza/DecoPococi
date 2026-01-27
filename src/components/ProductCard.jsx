@@ -20,7 +20,7 @@ export default function ProductCard({ product, phone = "50686714763", onOpenImag
           src={images[idx]}
           alt={product.nombre}
           className="card-image"
-          onClick={() => onOpenImage(images[idx], product.nombre)}
+          onClick={() => onOpenImage(images, idx)}
         />
 
         {images.length > 1 && (
@@ -31,6 +31,12 @@ export default function ProductCard({ product, phone = "50686714763", onOpenImag
             <button className="carousel-btn right" onClick={next} aria-label="Siguiente">
               ›
             </button>
+
+            <div className="carousel-dots">
+              {images.map((_, i) => (
+                <span key={i} className={`dot ${i === idx ? "active" : ""}`} />
+              ))}
+            </div>
           </>
         )}
       </div>
@@ -48,9 +54,7 @@ export default function ProductCard({ product, phone = "50686714763", onOpenImag
           </div>
         )}
 
-        <p className="card-description">
-          {product.descripcion || "Sin descripción por ahora."}
-        </p>
+        <p className="card-description">{product.descripcion || "Sin descripción por ahora."}</p>
 
         <a
           href={`https://wa.me/${phone}?text=${msg}`}

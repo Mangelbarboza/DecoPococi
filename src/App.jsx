@@ -8,9 +8,24 @@ import CategoryFilter from "./components/CategoryFilter.jsx";
 import TagFilter from "./components/TagFilter.jsx";
 import ProductCard from "./components/ProductCard.jsx";
 import ImageModal from "./components/ImageModal.jsx";
-import { normalizeProductEntry } from "./utils/contentful.js";
 
-const BASE_CATS = ["Todos", "Persianas", "Cortinas", "Servicios", "Alfombras", "Muebles"];
+import { normalizeProductEntry, normalizeUrl } from "./utils/contentful.js";
+
+const BASE_CATS = [
+  "Todos",
+  "Productos",
+  "Persianas",
+  "Cortinas en Tela",
+  "Alfombras",
+  "Servicios",
+  "Muebles TV",
+  "Closet",
+  "Muebles de cocina",
+  "Tapizado",
+  "Tipos de Cortineros",
+  "Puertas plegables",
+];
+
 const norm = (s) => String(s ?? "").trim().toLowerCase();
 
 export default function App() {
@@ -18,13 +33,21 @@ export default function App() {
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [tagsActivos, setTagsActivos] = useState([]);
 
+  // Modal global
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
   const [modalIndex, setModalIndex] = useState(0);
 
   const openModal = (images, index) => {
-    setModalImages(images);
-    setModalIndex(index);
+    const safeImages = (images ?? [])
+      .map(normalizeUrl)
+      .filter(Boolean);
+
+    if (!safeImages.length) return;
+
+    const safeIndex = Math.min(Math.max(index ?? 0, 0), safeImages.length - 1);
+    setModalImages(safeImages);
+    setModalIndex(safeIndex);
     setModalOpen(true);
   };
 
@@ -49,7 +72,12 @@ export default function App() {
   const categorias = useMemo(() => {
     const found = new Set();
     productos.forEach((p) => p.categorias.forEach((c) => found.add(c)));
-    const rest = [...found].filter((c) => !BASE_CATS.includes(c)).sort();
+
+    // Base primero (en el orden que pediste), luego lo que venga extra de Contentful
+    const rest = [...found]
+      .filter((c) => !BASE_CATS.includes(c))
+      .sort((a, b) => a.localeCompare(b));
+
     return [...BASE_CATS, ...rest];
   }, [productos]);
 
@@ -62,7 +90,7 @@ export default function App() {
   const tagsDisponibles = useMemo(() => {
     const s = new Set();
     productosPorCategoria.forEach((p) => p.etiquetas.forEach((t) => s.add(t)));
-    return [...s].sort();
+    return [...s].sort((a, b) => a.localeCompare(b));
   }, [productosPorCategoria]);
 
   const productosFiltrados = useMemo(() => {

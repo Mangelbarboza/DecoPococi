@@ -1,11 +1,13 @@
-import logo from "../assets/logo.png";
-
+import logo from "../assets/logo.svg";
+import logo2 from "../assets/logo2.png";
 export default function Header() {
   return (
     <header className="header">
       <div className="header-left">
+        <img className="brand-logo" src={logo2} alt="Cortinas Decopococi" />
         <img className="brand-logo" src={logo} alt="Cortinas Decopococi" />
         <div className="brand-meta">
+
         </div>
         <h1 className="visually-hidden">Cortinas Decopococi</h1>
       </div>

@@ -4,9 +4,8 @@ import './App.css';
 
 function App() {
   const [productos, setProductos] = useState([]);
-  const [categoriaActiva, setCategoriaActiva] = useState('Todos');
+  const [categoriaActiva, setCategoriaActiva] = useState("Todos");
 
-  // Estas son las categorías fijas que pidió tu hermano
   const categorias = ["Todos", "Servicio", "Cortinas", "Persianas", "Alfombras", "Muebles"];
 
   useEffect(() => {
@@ -17,28 +16,28 @@ function App() {
       .catch((err) => console.error(err));
   }, []);
 
-  // Lógica de filtrado
-  const productosFiltrados = categoriaActiva === 'Todos' 
+  const productosFiltrados = categoriaActiva === "Todos" 
     ? productos 
     : productos.filter(item => item.fields.categoria === categoriaActiva);
 
   return (
     <div className="app-container">
       
-      {/* HEADER */}
+      {/* HEADER FULL WIDTH (Sin contenedor restrictivo) */}
       <header className="header">
         <div className="brand-container">
           <h1 className="brand-title">Cortinas Decopococi</h1>
           <span className="brand-slogan">Un lujo a su alcance</span>
         </div>
+        
         <nav className="nav-menu">
-          <span className="nav-link active">Catálogo</span>
-          <span className="nav-link">Contáctenos</span>
-          <span className="nav-link">Sobre Nosotros</span>
+          <a className="nav-link active">Catálogo</a>
+          <a className="nav-link">Contáctenos</a>
+          <a className="nav-link">Sobre Nosotros</a>
         </nav>
       </header>
 
-      {/* FILTRO DE CATEGORÍAS (Carrusel) */}
+      {/* FILTRO DE CATEGORÍAS */}
       <div className="category-filter-container">
         {categorias.map(cat => (
           <button 
@@ -51,12 +50,11 @@ function App() {
         ))}
       </div>
 
-      {/* GRILLA DE PRODUCTOS */}
+      {/* GRILLA FULL WIDTH */}
       <main className="catalog-grid">
         {productosFiltrados.length > 0 ? (
           productosFiltrados.map((item) => {
             const { nombre, precio, imagen } = item.fields;
-            // Si hay imagen, usa la primera, si no, usa un placeholder gris
             const imgUrl = imagen && imagen.length > 0 
               ? imagen[0].fields.file.url 
               : 'https://via.placeholder.com/300x300?text=Sin+Foto';
@@ -73,7 +71,7 @@ function App() {
                   <p className="card-price">₡{precio}</p>
                   
                   <a 
-                    href={`https://wa.me/50688888888?text=Hola Decopococi, me interesa: ${nombre}`}
+                    href={`https://wa.me/50688888888?text=Hola, me interesa: ${nombre}`}
                     target="_blank" 
                     rel="noreferrer"
                     className="whatsapp-btn"
@@ -85,9 +83,9 @@ function App() {
             );
           })
         ) : (
-          <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px', color: '#666' }}>
-            No hay productos en la categoría "{categoriaActiva}" por ahora.
-          </p>
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#666', width: '100%' }}>
+            <p>No hay productos en la categoría <strong>{categoriaActiva}</strong>.</p>
+          </div>
         )}
       </main>
 

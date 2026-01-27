@@ -1,10 +1,14 @@
 :root {
-  --color-primary: #800020; /* Rojo oscuro elegante */
-  --color-secondary: #f8f9fa; /* Gris muy claro para fondo */
+  --color-primary: #800020; /* Tu Rojo Vino */
+  --color-primary-hover: #5a0016;
+  --color-secondary: #f8f9fa;
   --color-text-dark: #333333;
   --color-text-light: #666666;
   --color-white: #ffffff;
   --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* padding lateral responsivo */
+  --page-x: clamp(16px, 4vw, 40px);
 }
 
 * {
@@ -17,32 +21,48 @@ body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--color-secondary);
   color: var(--color-text-dark);
-  padding-bottom: 40px;
+  min-height: 100vh;
 }
 
-/* HEADER */
+/* QUITA restricciones del template */
+#root {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* --- HEADER FULL WIDTH --- */
 .header {
   background-color: var(--color-white);
-  padding: 15px 20px;
+  padding: 15px var(--page-x);
   border-bottom: 3px solid var(--color-primary);
   position: sticky;
   top: 0;
   z-index: 100;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .brand-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Alineado a la izquierda */
-  margin-bottom: 15px;
 }
 
 .brand-title {
   color: var(--color-primary);
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 .brand-slogan {
@@ -53,9 +73,11 @@ body {
 
 .nav-menu {
   display: flex;
-  gap: 20px;
-  font-size: 0.95rem;
+  gap: 25px;
+  font-size: 1rem;
   font-weight: 600;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .nav-link {
@@ -63,63 +85,63 @@ body {
   color: var(--color-text-dark);
   text-decoration: none;
   padding-bottom: 5px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
 }
 
+.nav-link:hover,
 .nav-link.active {
   color: var(--color-primary);
-  border-bottom: 2px solid var(--color-primary);
+  border-color: var(--color-primary);
 }
 
-/* FILTRO DE CATEGORÍAS (SCROLL HORIZONTAL) */
+/* --- FILTRO DE CATEGORÍAS --- */
 .category-filter-container {
-  padding: 15px 20px;
+  padding: 20px var(--page-x);
   background-color: var(--color-secondary);
-  overflow-x: auto; /* Permite deslizar en celular */
-  white-space: nowrap; /* Evita que bajen de línea */
-  -webkit-overflow-scrolling: touch;
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-/* Ocultar barra de scroll fea pero mantener funcionalidad */
-.category-filter-container::-webkit-scrollbar {
-  display: none;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .cat-btn {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: 1px solid #ddd;
-  border-radius: 20px;
+  border-radius: 30px;
   background: var(--color-white);
   color: var(--color-text-light);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cat-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .cat-btn.active {
   background-color: var(--color-primary);
   color: var(--color-white);
   border-color: var(--color-primary);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 2px 5px rgba(128, 0, 32, 0.3);
 }
 
-/* GRILLA DE PRODUCTOS */
+/* --- GRILLA RESPONSIVA Y CENTRADA --- */
 .catalog-grid {
   display: grid;
-  /* Móvil: 2 columnas. PC: Se ajusta solo */
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 15px;
-  padding: 0 15px;
-}
 
-@media (min-width: 768px) {
-  .catalog-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 30px;
-    padding: 0 40px;
-  }
+  /* centra el contenido y evita que se vea "perdido" si hay pocos items */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
+  justify-content: center;
+
+  gap: 25px;
+  padding: 10px var(--page-x) 40px var(--page-x);
+  width: 100%;
 }
 
 .product-card {
@@ -129,50 +151,87 @@ body {
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 360px;
 }
 
-.product-card:active {
-  transform: scale(0.98); /* Efecto click en celular */
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .card-image {
   width: 100%;
-  aspect-ratio: 1 / 1; /* Siempre cuadrado */
+  aspect-ratio: 4 / 3;
   object-fit: cover;
+  background-color: #eee;
 }
 
 .card-info {
-  padding: 10px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--color-text-dark);
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 700;
   line-height: 1.3;
 }
 
 .card-price {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 800;
   color: var(--color-primary);
-  margin-top: auto; /* Empuja el precio abajo */
-  margin-bottom: 10px;
+  margin-top: auto;
+  margin-bottom: 15px;
 }
 
+/* BOTÓN COTIZAR */
 .whatsapp-btn {
   display: block;
   width: 100%;
-  padding: 10px;
-  background-color: #25D366; /* Verde WhatsApp */
+  padding: 12px;
+  background-color: var(--color-primary);
   color: white;
   text-align: center;
   text-decoration: none;
   border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background-color 0.2s;
+}
+
+.whatsapp-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* AJUSTES PARA MÓVIL */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px var(--page-x);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-menu {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    padding: 10px var(--page-x) 40px var(--page-x);
+  }
+
+  .card-title { font-size: 0.95rem; }
+  .card-price { font-size: 1.1rem; }
+  .whatsapp-btn { padding: 10px; font-size: 0.9rem; }
 }

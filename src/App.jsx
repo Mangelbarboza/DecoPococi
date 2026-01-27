@@ -1,87 +1,96 @@
 import { useState, useEffect } from 'react';
 import { client } from './client';
-import './App.css'; // Usaremos el CSS por defecto un momento
+import './App.css';
 
 function App() {
   const [productos, setProductos] = useState([]);
+  const [categoriaActiva, setCategoriaActiva] = useState('Todos');
+
+  // Estas son las categorías fijas que pidió tu hermano
+  const categorias = ["Todos", "Servicio", "Cortinas", "Persianas", "Alfombras", "Muebles"];
 
   useEffect(() => {
-    // Pedimos los datos a Contentful
     client.getEntries({ content_type: 'producto' })
       .then((response) => {
-        console.log("Datos recibidos:", response.items); // Para depurar en consola
         setProductos(response.items);
       })
-      .catch((err) => console.error("Error conectando:", err));
+      .catch((err) => console.error(err));
   }, []);
 
+  // Lógica de filtrado
+  const productosFiltrados = categoriaActiva === 'Todos' 
+    ? productos 
+    : productos.filter(item => item.fields.categoria === categoriaActiva);
+
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1>Catálogo de Cortinas</h1>
-        <p>Calidad y estilo para tu hogar</p>
+    <div className="app-container">
+      
+      {/* HEADER */}
+      <header className="header">
+        <div className="brand-container">
+          <h1 className="brand-title">Cortinas Decopococi</h1>
+          <span className="brand-slogan">Un lujo a su alcance</span>
+        </div>
+        <nav className="nav-menu">
+          <span className="nav-link active">Catálogo</span>
+          <span className="nav-link">Contáctenos</span>
+          <span className="nav-link">Sobre Nosotros</span>
+        </nav>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
-        
-        {productos.map((item) => {
-          // Desempaquetamos los datos de cada cortina
-          const { nombre, precio, descripcion, imagen, disponible } = item.fields;
-          
-          // OJO: Como pusiste "Many files", imagen es un ARRAY (lista). 
-          // Tomamos la primera foto [0] para la portada.
-          const imgUrl = imagen && imagen.length > 0 ? imagen[0].fields.file.url : '';
-
-          return (
-            <article key={item.sys.id} style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
-              
-              {/* Imagen del producto */}
-              {imgUrl && (
-                <img 
-                  src={'https:' + imgUrl} 
-                  alt={nombre} 
-                  style={{ width: '100%', height: '200px', objectFit: 'cover' }} 
-                />
-              )}
-
-              <div style={{ padding: '15px' }}>
-                <h2 style={{ fontSize: '1.2rem', margin: '0 0 10px 0' }}>{nombre}</h2>
-                
-                {/* Etiqueta de Disponibilidad */}
-                {disponible ? 
-                  <span style={{ background: '#e6fffa', color: '#047857', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem' }}>Disponible</span> 
-                  : 
-                  <span style={{ background: '#fff5f5', color: '#c53030', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem' }}>Agotado</span>
-                }
-
-                <p style={{ color: '#555', fontSize: '0.9rem' }}>{descripcion}</p>
-                <h3 style={{ color: '#2b6cb0' }}>₡{precio}</h3>
-
-                {/* Botón WhatsApp */}
-                <a 
-                  href={`https://wa.me/50688888888?text=Hola, me interesa: ${nombre}`}
-                  target="_blank" 
-                  rel="noreferrer"
-                  style={{ 
-                    display: 'block', 
-                    width: '100%', 
-                    padding: '10px', 
-                    background: '#25D366', 
-                    color: 'white', 
-                    textAlign: 'center', 
-                    textDecoration: 'none', 
-                    borderRadius: '5px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Consultar
-                </a>
-              </div>
-            </article>
-          );
-        })}
-
+      {/* FILTRO DE CATEGORÍAS (Carrusel) */}
+      <div className="category-filter-container">
+        {categorias.map(cat => (
+          <button 
+            key={cat}
+            className={`cat-btn ${categoriaActiva === cat ? 'active' : ''}`}
+            onClick={() => setCategoriaActiva(cat)}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
+
+      {/* GRILLA DE PRODUCTOS */}
+      <main className="catalog-grid">
+        {productosFiltrados.length > 0 ? (
+          productosFiltrados.map((item) => {
+            const { nombre, precio, imagen } = item.fields;
+            // Si hay imagen, usa la primera, si no, usa un placeholder gris
+            const imgUrl = imagen && imagen.length > 0 
+              ? imagen[0].fields.file.url 
+              : 'https://via.placeholder.com/300x300?text=Sin+Foto';
+
+            return (
+              <article key={item.sys.id} className="product-card">
+                <img 
+                  src={imgUrl.startsWith('http') ? imgUrl : 'https:' + imgUrl} 
+                  alt={nombre} 
+                  className="card-image" 
+                />
+                <div className="card-info">
+                  <h3 className="card-title">{nombre}</h3>
+                  <p className="card-price">₡{precio}</p>
+                  
+                  <a 
+                    href={`https://wa.me/50688888888?text=Hola Decopococi, me interesa: ${nombre}`}
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="whatsapp-btn"
+                  >
+                    Cotizar
+                  </a>
+                </div>
+              </article>
+            );
+          })
+        ) : (
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px', color: '#666' }}>
+            No hay productos en la categoría "{categoriaActiva}" por ahora.
+          </p>
+        )}
+      </main>
+
     </div>
   );
 }

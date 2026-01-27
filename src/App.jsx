@@ -3,32 +3,38 @@ import { client } from "./client";
 import "./App.css";
 
 import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
 import CategoryFilter from "./components/CategoryFilter.jsx";
 import TagFilter from "./components/TagFilter.jsx";
 import ProductCard from "./components/ProductCard.jsx";
 import ImageModal from "./components/ImageModal.jsx";
-
 import { normalizeProductEntry } from "./utils/contentful.js";
 
 const BASE_CATS = ["Todos", "Persianas", "Cortinas", "Servicios", "Alfombras", "Muebles"];
+const norm = (s) => String(s ?? "").trim().toLowerCase();
 
 export default function App() {
   const [productos, setProductos] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [tagsActivos, setTagsActivos] = useState([]);
 
-  // Modal global (1 solo)
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalSrc, setModalSrc] = useState("");
-  const [modalAlt, setModalAlt] = useState("");
+  const [modalImages, setModalImages] = useState([]);
+  const [modalIndex, setModalIndex] = useState(0);
 
-  const openModal = (src, alt) => {
-    setModalSrc(src);
-    setModalAlt(alt);
+  const openModal = (images, index) => {
+    setModalImages(images);
+    setModalIndex(index);
     setModalOpen(true);
   };
 
   const closeModal = () => setModalOpen(false);
+
+  const modalPrev = () =>
+    setModalIndex((i) => (i - 1 + modalImages.length) % modalImages.length);
+
+  const modalNext = () =>
+    setModalIndex((i) => (i + 1) % modalImages.length);
 
   useEffect(() => {
     client
@@ -40,39 +46,36 @@ export default function App() {
       .catch((err) => console.error(err));
   }, []);
 
-  // Categorías: usa base + detectadas
   const categorias = useMemo(() => {
     const found = new Set();
     productos.forEach((p) => p.categorias.forEach((c) => found.add(c)));
-
     const rest = [...found].filter((c) => !BASE_CATS.includes(c)).sort();
     return [...BASE_CATS, ...rest];
   }, [productos]);
 
-  // Filtro por categoría (ya viene canonicalizada desde normalizeProductEntry)
   const productosPorCategoria = useMemo(() => {
     if (categoriaActiva === "Todos") return productos;
-    return productos.filter((p) => p.categorias.includes(categoriaActiva));
+    const cat = norm(categoriaActiva);
+    return productos.filter((p) => p.categorias.some((c) => norm(c) === cat));
   }, [productos, categoriaActiva]);
 
-  // Tags disponibles según categoría
   const tagsDisponibles = useMemo(() => {
     const s = new Set();
     productosPorCategoria.forEach((p) => p.etiquetas.forEach((t) => s.add(t)));
     return [...s].sort();
   }, [productosPorCategoria]);
 
-  // Filtro incremental por tags (AND)
   const productosFiltrados = useMemo(() => {
     if (!tagsActivos.length) return productosPorCategoria;
+    const active = tagsActivos.map(norm);
     return productosPorCategoria.filter((p) =>
-      tagsActivos.every((t) => p.etiquetas.includes(t))
+      active.every((t) => p.etiquetas.some((e) => norm(e) === t))
     );
   }, [productosPorCategoria, tagsActivos]);
 
   const onSelectCategoria = (cat) => {
     setCategoriaActiva(cat);
-    setTagsActivos([]); // reset tags al cambiar categoría
+    setTagsActivos([]);
   };
 
   const onToggleTag = (tag) => {
@@ -112,7 +115,16 @@ export default function App() {
         )}
       </main>
 
-      <ImageModal open={modalOpen} src={modalSrc} alt={modalAlt} onClose={closeModal} />
+      <ImageModal
+        open={modalOpen}
+        images={modalImages}
+        index={modalIndex}
+        onClose={closeModal}
+        onPrev={modalPrev}
+        onNext={modalNext}
+      />
+
+      <Footer />
     </div>
   );
 }

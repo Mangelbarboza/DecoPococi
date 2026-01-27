@@ -6,7 +6,7 @@ function App() {
   const [productos, setProductos] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
 
-  const categorias = ["Todos", "Servicio", "Cortinas", "Persianas", "Alfombras", "Muebles"];
+  const categorias = ["Todos", "Servicios", "Cortinas", "Persianas", "Alfombras", "Muebles"];
 
   useEffect(() => {
     client.getEntries({ content_type: 'producto' })
@@ -71,7 +71,7 @@ function App() {
                   <p className="card-price">₡{precio}</p>
                   
                   <a 
-                    href={`https://wa.me/50688888888?text=Hola, me interesa: ${nombre}`}
+                    href={`https://wa.me/50686714763?text=Hola, me interesa: ${nombre}`}
                     target="_blank" 
                     rel="noreferrer"
                     className="whatsapp-btn"

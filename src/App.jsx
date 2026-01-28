@@ -11,20 +11,11 @@ import ImageModal from "./components/ImageModal.jsx";
 
 import { normalizeProductEntry, normalizeUrl } from "./utils/contentful.js";
 
-const BASE_CATS = [
-  "Todos",
-  "Productos",
-  "Persianas",
-  "Cortinas en Tela",
-  "Alfombras",
-  "Servicios",
-  "Muebles TV",
-  "Closet",
-  "Muebles de cocina",
-  "Tapizado",
-  "Tipos de Cortineros",
-  "Puertas plegables",
-];
+// ✅ Las 4 que quieres primero (después de "Todos")
+const PINNED_CATS = ["Persianas", "Cortinas", "Alfombras", "Cortineros"];
+
+// ✅ Estas NO deben aparecer en las opciones
+const HIDDEN_CATS = ["Productos", "Cortinas en Tela"];
 
 const norm = (s) => String(s ?? "").trim().toLowerCase();
 
@@ -39,10 +30,7 @@ export default function App() {
   const [modalIndex, setModalIndex] = useState(0);
 
   const openModal = (images, index) => {
-    const safeImages = (images ?? [])
-      .map(normalizeUrl)
-      .filter(Boolean);
-
+    const safeImages = (images ?? []).map(normalizeUrl).filter(Boolean);
     if (!safeImages.length) return;
 
     const safeIndex = Math.min(Math.max(index ?? 0, 0), safeImages.length - 1);
@@ -69,16 +57,27 @@ export default function App() {
       .catch((err) => console.error(err));
   }, []);
 
+  // ✅ Categorías ordenadas como pediste
   const categorias = useMemo(() => {
     const found = new Set();
     productos.forEach((p) => p.categorias.forEach((c) => found.add(c)));
 
-    // Base primero (en el orden que pediste), luego lo que venga extra de Contentful
-    const rest = [...found]
-      .filter((c) => !BASE_CATS.includes(c))
+    // Quita las ocultas (aunque existan en Contentful)
+    const hiddenNorm = new Set(HIDDEN_CATS.map(norm));
+
+    const foundVisible = [...found].filter((c) => !hiddenNorm.has(norm(c)));
+
+    // Asegura que los pinned existan en la lista aunque no haya productos (para que se vean)
+    const pinned = PINNED_CATS.filter((c) => !hiddenNorm.has(norm(c)));
+
+    // Resto: lo que venga de Contentful, menos pinned y menos "Todos"
+    const pinnedNorm = new Set(pinned.map(norm));
+
+    const rest = foundVisible
+      .filter((c) => !pinnedNorm.has(norm(c)))
       .sort((a, b) => a.localeCompare(b));
 
-    return [...BASE_CATS, ...rest];
+    return ["Todos", ...pinned, ...rest];
   }, [productos]);
 
   const productosPorCategoria = useMemo(() => {

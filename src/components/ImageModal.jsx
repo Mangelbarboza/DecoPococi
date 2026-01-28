@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export default function ImageModal({ open, images, index, onClose }) {
+export default function ImageModal({ open, title = "", images, index, onClose }) {
   const safeImages = useMemo(() => {
     return (images ?? [])
       .map((u) => (typeof u === "string" ? u.trim() : ""))
@@ -12,15 +12,9 @@ export default function ImageModal({ open, images, index, onClose }) {
   // Zoom
   const [scale, setScale] = useState(1);
 
-  // Pan (arrastre)
+  // Pan
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const drag = useRef({
-    dragging: false,
-    startX: 0,
-    startY: 0,
-    baseX: 0,
-    baseY: 0,
-  });
+  const drag = useRef({ dragging: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
 
   useEffect(() => {
     if (!open) return;
@@ -36,13 +30,11 @@ export default function ImageModal({ open, images, index, onClose }) {
       if (e.key === "Escape") onClose();
       if (e.key === "ArrowLeft") {
         setSelected((s) => Math.max(s - 1, 0));
-        setScale(1);
-        setOffset({ x: 0, y: 0 });
+        resetZoom();
       }
       if (e.key === "ArrowRight") {
         setSelected((s) => Math.min(s + 1, safeImages.length - 1));
-        setScale(1);
-        setOffset({ x: 0, y: 0 });
+        resetZoom();
       }
     };
 
@@ -53,10 +45,8 @@ export default function ImageModal({ open, images, index, onClose }) {
   // Bloquear scroll del body mientras el modal está abierto
   useEffect(() => {
     if (!open) return;
-
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     return () => {
       document.body.style.overflow = prevOverflow;
     };
@@ -67,7 +57,6 @@ export default function ImageModal({ open, images, index, onClose }) {
   const currentSrc = safeImages[selected];
 
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-
   const zoomIn = () => setScale((s) => clamp(Number((s + 0.25).toFixed(2)), 1, 3));
   const zoomOut = () =>
     setScale((s) => {
@@ -94,17 +83,13 @@ export default function ImageModal({ open, images, index, onClose }) {
     if (!drag.current.dragging) return;
     const dx = clientX - drag.current.startX;
     const dy = clientY - drag.current.startY;
-    setOffset({
-      x: drag.current.baseX + dx,
-      y: drag.current.baseY + dy,
-    });
+    setOffset({ x: drag.current.baseX + dx, y: drag.current.baseY + dy });
   };
 
   const endDrag = () => {
     drag.current.dragging = false;
   };
 
-  // Mouse handlers
   const onMouseDown = (e) => {
     e.preventDefault();
     startDrag(e.clientX, e.clientY);
@@ -113,7 +98,6 @@ export default function ImageModal({ open, images, index, onClose }) {
   const onMouseUp = () => endDrag();
   const onMouseLeave = () => endDrag();
 
-  // Touch handlers (móvil)
   const onTouchStart = (e) => {
     if (e.touches?.length !== 1) return;
     const t = e.touches[0];
@@ -141,6 +125,10 @@ export default function ImageModal({ open, images, index, onClose }) {
         ) : (
           <div className="modal-content">
             <div className="modal-toolbar">
+              <div className="modal-title">
+                {title || "Galería"}
+              </div>
+
               <div className="zoom-pill">
                 <button className="zoom-btn" onClick={zoomOut} aria-label="Zoom menos">
                   −
@@ -149,13 +137,9 @@ export default function ImageModal({ open, images, index, onClose }) {
                 <button className="zoom-btn" onClick={zoomIn} aria-label="Zoom más">
                   +
                 </button>
-                <button className="zoom-reset" onClick={resetZoom} aria-label="Reset zoom">
-                  Reset
+                <button className="zoom-reset" onClick={resetZoom} aria-label="Reiniciar zoom">
+                  Reiniciar
                 </button>
-              </div>
-
-              <div className="modal-hint">
-                {scale > 1 ? "Arrastrá para mover la imagen" : "Usá + para acercar"}
               </div>
             </div>
 
@@ -173,10 +157,8 @@ export default function ImageModal({ open, images, index, onClose }) {
                 <img
                   className="modal-img"
                   src={currentSrc}
-                  alt="Imagen del producto"
-                  style={{
-                    transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
-                  }}
+                  alt={title ? `Imagen de ${title}` : "Imagen del producto"}
+                  style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})` }}
                   draggable={false}
                   onError={(e) => {
                     e.currentTarget.src =

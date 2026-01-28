@@ -28,16 +28,23 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
   const [modalIndex, setModalIndex] = useState(0);
+  const [modalTitle, setModalTitle] = useState("");
 
-  const openModal = (images, index) => {
-    const safeImages = (images ?? []).map(normalizeUrl).filter(Boolean);
-    if (!safeImages.length) return;
 
-    const safeIndex = Math.min(Math.max(index ?? 0, 0), safeImages.length - 1);
-    setModalImages(safeImages);
-    setModalIndex(safeIndex);
-    setModalOpen(true);
-  };
+ const openModal = (images, index, title) => {
+  const safeImages = (images ?? [])
+    .map((u) => (typeof u === "string" ? u.trim() : ""))
+    .filter(Boolean);
+
+  if (!safeImages.length) return;
+
+  const safeIndex = Math.min(Math.max(index ?? 0, 0), safeImages.length - 1);
+
+  setModalImages(safeImages);
+  setModalIndex(safeIndex);
+  setModalTitle(title ?? "");
+  setModalOpen(true);
+};
 
   const closeModal = () => setModalOpen(false);
 
@@ -144,10 +151,12 @@ export default function App() {
 
       <ImageModal
   open={modalOpen}
+  title={modalTitle}
   images={modalImages}
   index={modalIndex}
   onClose={() => setModalOpen(false)}
 />
+
 
 
       <Footer />

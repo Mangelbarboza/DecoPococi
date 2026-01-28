@@ -20,7 +20,7 @@ export default function ProductCard({ product, phone = "50686714763", onOpenImag
           src={images[idx]}
           alt={product.nombre}
           className="card-image"
-          onClick={() => onOpenImage(images, idx)}
+          onClick={() => onOpenImage(images, idx, product.nombre)}  // ✅ title
         />
 
         {images.length > 1 && (
@@ -44,17 +44,14 @@ export default function ProductCard({ product, phone = "50686714763", onOpenImag
       <div className="card-info">
         <h3 className="card-title">{product.nombre}</h3>
 
-        {product.etiquetas?.length > 0 && (
-          <div className="badge-row">
-            {product.etiquetas.slice(0, 4).map((t) => (
-              <span key={t} className="badge">
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
+       <p className="card-description card-clamp">
+  {(product.descripcion || "Sin descripción por ahora.")
+    .replace(/^Características:\s*/i, "")
+    .replace(/\s*\d+\.\s*/g, " • ")
+    .replace(/\s+/g, " ")
+    .trim()}
+</p>
 
-        <p className="card-description">{product.descripcion || "Sin descripción por ahora."}</p>
 
         <a
           href={`https://wa.me/${phone}?text=${msg}`}

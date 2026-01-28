@@ -108,15 +108,12 @@ body {
 /* =========================
    CATEGORY BAR (STICKY + SCROLL HORIZONTAL) - TRANSPARENTE
    ========================= */
+/* CATEGORY BAR anclado debajo del header (NO sticky) */
 .category-filter-container {
-  position: sticky;
-  top: 78px; /* ajustá si tu header es más alto/bajo */
-  z-index: 1200;
+  position: static; /* ✅ no sigue al usuario */
+  z-index: auto;
 
-  /* ✅ SIN CAJA: transparente */
   background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   border-bottom: none;
 
   padding: 12px var(--page-x);

@@ -123,10 +123,11 @@ export default function App() {
       <Header />
 
       <CategoryFilter
-        categorias={categorias}
-        categoriaActiva={categoriaActiva}
-        onSelect={onSelectCategoria}
-      />
+  categorias={categorias}
+  categoriaActiva={categoriaActiva}
+  onSelect={onSelectCategoria}
+  hidden={modalOpen}
+/>
 
       {categoriaActiva !== "Todos" && (
         <TagFilter

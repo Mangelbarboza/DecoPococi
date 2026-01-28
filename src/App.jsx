@@ -143,13 +143,12 @@ export default function App() {
       </main>
 
       <ImageModal
-        open={modalOpen}
-        images={modalImages}
-        index={modalIndex}
-        onClose={closeModal}
-        onPrev={modalPrev}
-        onNext={modalNext}
-      />
+  open={modalOpen}
+  images={modalImages}
+  index={modalIndex}
+  onClose={() => setModalOpen(false)}
+/>
+
 
       <Footer />
     </div>

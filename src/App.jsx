@@ -12,7 +12,8 @@ import ImageModal from "./components/ImageModal.jsx";
 import { normalizeProductEntry, normalizeUrl } from "./utils/contentful.js";
 
 // ✅ Las 4 que quieres primero (después de "Todos")
-const PINNED_CATS = ["Persianas", "Cortinas", "Alfombras", "Cortineros"];
+const PINNED_CATS = ["Persianas", "Cortinas", "Alfombras", "Cortineros", "Muebles", "Decoraciones", "Puertas", "Servicios"];
+
 
 // ✅ Estas NO deben aparecer en las opciones
 const HIDDEN_CATS = ["Productos", "Cortinas en Tela"];

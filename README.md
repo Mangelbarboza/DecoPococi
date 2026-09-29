@@ -6,11 +6,11 @@
 
   **Plataforma web comercial diseñada y desarrollada a medida para la exhibición de productos, decoración y servicios de tapicería e instalación en Pococí, Costa Rica.**
 
-  [![Sitio Web en Vivo](https://img.shields.io/badge/Demo_en_Vivo-deco--pococi.vercel.app-800020?style=for-the-badge&logo=vercel&logoColor=white)](https://deco-pococi.vercel.app)
+  [![Sitio Web Oficial](https://img.shields.io/badge/Sitio_Web-cortinasdecopococi.shop-800020?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.cortinasdecopococi.shop/)
   [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
   [![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
   [![Contentful](https://img.shields.io/badge/Contentful-Headless_CMS-2478CC?style=for-the-badge&logo=contentful&logoColor=white)](https://www.contentful.com/)
-  [![WhatsApp Business](https://img.shields.io/badge/Cotización_Directa-WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://deco-pococi.vercel.app)
+  [![WhatsApp Business](https://img.shields.io/badge/Cotización_Directa-WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://www.cortinasdecopococi.shop/)
 
 </div>
 
@@ -19,10 +19,10 @@
 ## Vista Previa del Proyecto
 
 <div align="center">
-  <a href="https://deco-pococi.vercel.app" target="_blank">
+  <a href="https://www.cortinasdecopococi.shop/" target="_blank">
     <img src="./public/preview.png" alt="Vista previa del catálogo de Cortinas DecoPococí" width="100%" />
   </a>
-  <p><em>Interfaz principal en producción mostrando el carrusel interactivo por tarjeta, barra de categorías y acceso directo a cotización.</em></p>
+  <p><em>Interfaz principal en producción (<a href="https://www.cortinasdecopococi.shop/">cortinasdecopococi.shop</a>) mostrando el carrusel interactivo por tarjeta, barra de categorías y acceso directo a cotización.</em></p>
 </div>
 
 ---
@@ -60,7 +60,7 @@ Se diseñó e implementó una arquitectura desacoplada (*Headless*) compuesta po
 ```mermaid
 flowchart LR
     subgraph Cliente["Usuarios Finales"]
-        Web["SPA React 19 + Vite\n(deco-pococi.vercel.app)"]
+        Web["SPA React 19 + Vite\n(cortinasdecopococi.shop)"]
         WA["WhatsApp Business\n(Cotización Directa)"]
     end
 
@@ -158,7 +158,7 @@ npm run preview
 Desarrollado por **Angel Barboza**
 
 - **GitHub:** [@Mangelbarboza](https://github.com/Mangelbarboza)
-- **Proyecto en Producción:** [deco-pococi.vercel.app](https://deco-pococi.vercel.app)
+- **Sitio Web Oficial:** [www.cortinasdecopococi.shop](https://www.cortinasdecopococi.shop/)
 
 ---
 

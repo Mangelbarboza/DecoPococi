@@ -1,7 +1,9 @@
 {
-  "name": "decopococi--",
+  "name": "cortinas-decopococi-web",
+  "description": "Catálogo digital interactivo para Cortinas DecoPococí impulsado por React 19, Vite y Contentful Headless CMS.",
+  "author": "Angel Barboza (@Mangelbarboza)",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

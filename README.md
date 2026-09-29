@@ -7,6 +7,7 @@
   **Plataforma web comercial diseñada y desarrollada a medida para la exhibición de productos, decoración y servicios de tapicería e instalación en Pococí, Costa Rica.**
 
   [![Sitio Web Oficial](https://img.shields.io/badge/Sitio_Web-cortinasdecopococi.shop-800020?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.cortinasdecopococi.shop/)
+  [![App Administrativa Android](https://img.shields.io/badge/App_Admin_Android-CortinasDecoPocociApp-3DDC84?style=for-the-badge&logo=android&logoColor=black)](https://github.com/Mangelbarboza/CortinasDecoPocociApp)
   [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
   [![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
   [![Contentful](https://img.shields.io/badge/Contentful-Headless_CMS-2478CC?style=for-the-badge&logo=contentful&logoColor=white)](https://www.contentful.com/)
@@ -29,13 +30,13 @@
 
 ## Caso de Estudio (Cliente Real)
 
-**Cortinas DecoPococí** requería modernizar la presentación de su inventario de cortinas a medida, persianas, alfombras, muebles y servicios de tapicería/instalación, permitiendo a sus clientes explorar fotografías reales de trabajos terminados y solicitar cotizaciones inmediatas sin fricción.
+**Cortinas DecoPococí** (propiedad de **Luis Barboza**) requería modernizar la presentación de su inventario de cortinas a medida, persianas, alfombras, muebles y servicios de tapicería/instalación, permitiendo a sus clientes explorar fotografías reales de trabajos terminados y solicitar cotizaciones inmediatas sin fricción, además de contar con una forma sencilla de administrar su catálogo desde el celular sin depender de un programador ni de paneles complejos.
 
-### Solución Implementada
-Se diseñó e implementó una arquitectura desacoplada (*Headless*) compuesta por:
+### Solución Integral Implementada
+Se diseñó e implementó una arquitectura desacoplada (*Headless*) compuesta por 3 pilares:
 1. **Aplicación Web Pública (Este Repositorio):** SPA ultrarrápida construida con **React 19** y **Vite**, enfocada en experiencia de usuario (*UX*), carga instantánea y conversión directa hacia WhatsApp.
 2. **Gestión de Contenido en la Nube (Contentful CMS):** Almacenamiento estructurado de productos, múltiples activos fotográficos de alta resolución, categorías y etiquetas dinámicas.
-3. **Ecosistema Móvil Administrativo:** Sincronización en tiempo real con una aplicación Android nativa (Kotlin / Jetpack Compose) utilizada por el cliente para publicar, editar o eliminar productos e imágenes desde su teléfono sin tocar código.
+3. **App Móvil Administrativa Exclusiva para el Cliente ([Mangelbarboza/CortinasDecoPocociApp](https://github.com/Mangelbarboza/CortinasDecoPocociApp)):** Aplicación nativa Android (Kotlin + Jetpack Compose) diseñada exclusivamente para **Luis Barboza (Cortinas DecoPococí)**. Desde una interfaz sumamente sencilla e intuitiva protegida por PIN, el cliente gestiona todo el inventario de la página web en tiempo real: sube productos con múltiples fotografías, edita descripciones o categorías, visualiza tarjetas previas idénticas a la web y elimina artículos obsoletos directamente desde su teléfono.
 
 ---
 
@@ -55,7 +56,7 @@ Se diseñó e implementó una arquitectura desacoplada (*Headless*) compuesta po
 
 ---
 
-## Arquitectura del Sistema
+## Arquitectura del Sistema (Web + App Administrativa)
 
 ```mermaid
 flowchart LR
@@ -66,18 +67,21 @@ flowchart LR
 
     subgraph Cloud["Backend Headless"]
         CDA["Contentful CDA\n(Lectura Rápida CDN)"]
-        CMA["Contentful CMA\n(Gestión de Contenido)"]
+        CMA["Contentful CMA\n(Gestión de Inventario)"]
     end
 
-    subgraph Admin["Administración del Negocio"]
-        App["App Android Nativa\n(CRUD de Productos y Fotos)"]
+    subgraph Admin["Uso Exclusivo: Luis Barboza (Cortinas DecoPococí)"]
+        App["App Android Administrativa\n(Mangelbarboza/CortinasDecoPocociApp)"]
     end
 
-    App -->|"Publica / Edita / Elimina"| CMA
-    CMA -->|"Sincroniza"| CDA
-    CDA -->|"JSON + Assets CDN"| Web
+    App -->|"Sube Fotos / Crea / Edita / Elimina"| CMA
+    CMA -->|"Sincroniza en Tiempo Real"| CDA
+    CDA -->|"JSON + Galerías CDN"| Web
     Web -->|"Mensaje Pre-formateado"| WA
 ```
+
+> **Repositorio de la App Administrativa:**  
+> 👉 [**Mangelbarboza/CortinasDecoPocociApp — Aplicación móvil Android para la administración del catálogo de Cortinas DecoPococí**](https://github.com/Mangelbarboza/CortinasDecoPocociApp)
 
 ---
 
@@ -158,7 +162,8 @@ npm run preview
 Desarrollado por **Angel Barboza**
 
 - **GitHub:** [@Mangelbarboza](https://github.com/Mangelbarboza)
-- **Sitio Web Oficial:** [www.cortinasdecopococi.shop](https://www.cortinasdecopococi.shop/)
+- **Sitio Web Oficial:** [Cortinas DecoPococí (www.cortinasdecopococi.shop)](https://www.cortinasdecopococi.shop/)
+- **Repositorio App Administrativa (Android):** [Mangelbarboza/CortinasDecoPocociApp](https://github.com/Mangelbarboza/CortinasDecoPocociApp)
 
 ---
 
